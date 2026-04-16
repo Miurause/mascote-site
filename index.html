@@ -55,20 +55,49 @@
   <p id="status"></p>
 </div>
 
-<script>
-function enviar() {
-  const msg = document.getElementById("mensagem").value;
-  const voz = document.getElementById("voz").value;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  if (!msg) {
-    alert("Digite uma mensagem!");
-    return;
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQiP5UmbWvVr_uDe658mr_xuDcYBJDuFA",
+    authDomain: "trago-e-gamba.firebaseapp.com",
+    projectId: "trago-e-gamba",
+    storageBucket: "trago-e-gamba.firebasestorage.app",
+    messagingSenderId: "1014096217959",
+    appId: "1:1014096217959:web:09b2f1c4d7491fb78b11c2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function enviar() {
+    const msg = document.getElementById("mensagem").value;
+    const voz = document.getElementById("voz").value;
+
+    if (!msg) {
+      alert("Digite uma mensagem!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        text: msg,
+        voice: voz,
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById("status").innerText = "Mensagem enviada pro mascote 🐻🔥";
+      document.getElementById("mensagem").value = "";
+
+    } catch (error) {
+      console.error("Erro:", error);
+      document.getElementById("status").innerText = "Erro ao enviar 😢";
+    }
   }
 
-  console.log({ msg, voz });
-
-  document.getElementById("status").innerText = "Enviado! 🎉";
-}
+  window.enviar = enviar;
 </script>
 
 </body>
