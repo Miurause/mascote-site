@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Mascote Player</title>
+</head>
+<body style="background:#111;color:#fff;font-family:Arial;text-align:center;padding:40px;">
+
+  <h1>🎤 Mascote ao vivo</h1>
+  <p id="status">Aguardando mensagens...</p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQiP5UmbWvVr_uDe658mr_xuDcYBJDuFA",
+      authDomain: "trago-e-gamba.firebaseapp.com",
+      projectId: "trago-e-gamba",
+      storageBucket: "trago-e-gamba.firebasestorage.app",
+      messagingSenderId: "1014096217959",
+      appId: "1:1014096217959:web:09b2f1c4d7491fb78b11c2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const statusEl = document.getElementById("status");
+
+    function falar(texto) {
+      const msg = new SpeechSynthesisUtterance(texto);
+      msg.lang = "pt-BR";
+      msg.rate = 1;
+      msg.pitch = 1;
+
+      speechSynthesis.speak(msg);
+    }
+
+    const q = query(
+      collection(db, "messages"),
+      where("status", "==", "pending")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      snapshot.forEach(async (docSnap) => {
+        const data = docSnap.data();
+
+        statusEl.innerText = "Falando: " + data.text;
+
+        falar(data.text);
+
+        // marca como já falado
+        await updateDoc(doc(db, "messages", docSnap.id), {
+          status: "played"
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
