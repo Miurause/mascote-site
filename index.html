@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Fale com o Mascote</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      background: orange;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🎤 Fale com o Mascote</h2>
+
+  <textarea id="mensagem" maxlength="120" placeholder="Digite sua mensagem..."></textarea>
+
+  <select id="voz">
+    <option value="default">Voz Normal</option>
+    <option value="robot">Voz Robô</option>
+    <option value="narrador">Narrador</option>
+  </select>
+
+  <button onclick="enviar()">Enviar</button>
+
+  <p id="status"></p>
+</div>
+
+<script>
+function enviar() {
+  const msg = document.getElementById("mensagem").value;
+  const voz = document.getElementById("voz").value;
+
+  if (!msg) {
+    alert("Digite uma mensagem!");
+    return;
+  }
+
+  console.log({ msg, voz });
+
+  document.getElementById("status").innerText = "Enviado! 🎉";
+}
+</script>
+
+</body>
+</html>
