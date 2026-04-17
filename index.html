@@ -2,104 +2,36 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Fale com o Mascote</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <style>
-    body {
-      font-family: Arial;
-      background: #111;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    textarea, select, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-    }
-
-    button {
-      background: orange;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+  <title>Mascote Sender</title>
 </head>
-<body>
 
-<div class="container">
-  <h2>🎤 Fale com o Mascote</h2>
+<body style="background:#111;color:#fff;font-family:Arial;text-align:center;padding:40px;">
 
-  <textarea id="mensagem" maxlength="120" placeholder="Digite sua mensagem..."></textarea>
+  <h1>🎤 Fale com o Mascote</h1>
 
-  <select id="voz">
-    <option value="default">Voz Normal</option>
-    <option value="robot">Voz Robô</option>
-    <option value="narrador">Narrador</option>
-  </select>
+  <input id="msg" placeholder="Digite sua mensagem" style="width:300px;padding:10px;">
+  <br><br>
 
-  <button onclick="enviar()">Enviar</button>
+  <button onclick="enviar()" style="padding:10px 20px;">Enviar</button>
 
   <p id="status"></p>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script>
+    function enviar() {
+      const texto = document.getElementById("msg").value;
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDQiP5UmbWvVr_uDe658mr_xuDcYBJDuFA",
-    authDomain: "trago-e-gamba.firebaseapp.com",
-    projectId: "trago-e-gamba",
-    storageBucket: "trago-e-gamba.firebasestorage.app",
-    messagingSenderId: "1014096217959",
-    appId: "1:1014096217959:web:09b2f1c4d7491fb78b11c2"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  async function enviar() {
-    const msg = document.getElementById("mensagem").value;
-    const voz = document.getElementById("voz").value;
-
-    if (!msg) {
-      alert("Digite uma mensagem!");
-      return;
-    }
-
-    try {
-      await addDoc(collection(db, "messages"), {
-        text: msg,
-        voice: voz,
-        status: "pending",
-        createdAt: serverTimestamp()
+      fetch("https://trago-e-gamba-default-rtdb.firebaseio.com/messages.json", {
+        method: "POST",
+        body: JSON.stringify({
+          text: texto,
+          status: "pending",
+          voice: "default"
+        })
       });
 
-      document.getElementById("status").innerText = "Mensagem enviada pro mascote 🐻🔥";
-      document.getElementById("mensagem").value = "";
-
-    } catch (error) {
-      console.error("Erro:", error);
-      document.getElementById("status").innerText = "Erro ao enviar 😢";
+      document.getElementById("status").innerText = "Mensagem enviada!";
     }
-  }
-
-window.enviar = enviar;
-</script>
+  </script>
 
 </body>
 </html>
-<!-- teste -->
